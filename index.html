@@ -593,7 +593,7 @@
 
         function siguientePersona() {
             // Check if all personas have been correctly guessed
-            if (personasAcertadas.size === totalPersonas) {
+            if (personasAcertadas.size + personasNoAcertadas.size === totalPersonas) {
                 terminarJuego();
                 return;
             }
@@ -622,11 +622,11 @@
             });
             
             // Actualizar barra de progreso
-            const progreso = (personasAcertadas.size / totalPersonas) * 100;
+            const progreso = (preguntasRealizadas / totalPersonas) * 100;
             progressBar.style.width = progreso + '%';
             
             // Update remaining count
-            remainingDisplay.textContent = totalPersonas - personasAcertadas.size;
+            remainingDisplay.textContent = totalPersonas - personasAcertadas.size - personasNoAcertadas.size;
             resultado.classList.add('hidden-result');
         }
 
@@ -665,7 +665,7 @@
                 conferenceBtn.disabled = false;
                 interpolBtn.disabled = false;
                 siguientePersona();
-            }, 2500);
+            }, 2000);
         }
 
         function terminarJuego() {
