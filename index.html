@@ -555,6 +555,7 @@
         function inicializarJuego() {
             // Start with all personas available
             personasAcertadas = new Set();
+            personasNoAcertadas = new Set();
             puntuacion = 0;
             preguntasRealizadas = 0;
             juegoTerminado = false;
@@ -598,7 +599,7 @@
             }
 
             // Select a random person from those not yet correctly guessed
-            const personasDisponibles = personas.filter(p => !personasAcertadas.has(p.nombre));
+            const personasDisponibles = personas.filter(p => !personasAcertadas.has(p.nombre)).filter(p => !personasNoAcertadas.has(p.nombre));
             const indiceAleatorio = Math.floor(Math.random() * personasDisponibles.length);
             personaActual = personasDisponibles[indiceAleatorio];
             
@@ -647,9 +648,9 @@
                 resultado.textContent = "Esatto!\n" + personaActual.datos;
                 resultado.className = "correct";
             } else {
+                personasNoAcertadas.add(personaActual.nombre);
                 resultado.textContent = "Sbagliato!\n" + personaActual.datos;
                 resultado.className = "incorrect";
-                // Person stays in the pool to be guessed again
             }
             
             // Actualizar precisión
@@ -664,7 +665,7 @@
                 conferenceBtn.disabled = false;
                 interpolBtn.disabled = false;
                 siguientePersona();
-            }, 5000);
+            }, 2500);
         }
 
         function terminarJuego() {
