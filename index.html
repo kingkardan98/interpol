@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference League vs Interpol</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            flex: 1;
+            padding: 10px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        
+        .persona { 
+            margin: 20px 0; 
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .persona:hover {
+            transform: translateY(-5px);
+        }
+        
+        img { 
+            width: 200px; 
+            height: 200px; 
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #1a2a6c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .image-placeholder {
+            width: 200px;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 1rem;
+            color: #666;
+            border: 3px dashed #999;
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        button { 
+            padding: 15px 30px; 
+            font-size: 1.1rem; 
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            min-width: 180px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .conference { 
+            background: linear-gradient(to right, #008000, #00b300); 
+            color: white; 
+        }
+        
+        .interpol { 
+            background: linear-gradient(to right, #cc0000, #ff3333); 
+            color: white; 
+        }
+        
+        .restart { 
+            background: linear-gradient(to right, #1a2a6c, #3a4a9c); 
+            color: white; 
+            margin-top: 15px;
+        }
+        
+        #resultado {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 40px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: pre-line;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden-result {
+            display: none;
+        }
+        
+        .end-game {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            background-color: #f0f8ff;
+            border-radius: 12px;
+            border: 2px solid #1a2a6c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .end-game h2 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .game-over {
+            color: #cc0000;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .final-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .final-stat {
+            text-align: center;
+        }
+        
+        .final-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 10px;
+        }
+        
+        .loading {
+            display: none;
+            font-size: 1.2rem;
+            color: #1a2a6c;
+            margin: 10px 0;
+        }
+        
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .game-stats, .final-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conference League o Interpol?</h1>
+        
+        <div class="game-stats">
+            <div class="stat-box">
+                <div>Punteggio</div>
+                <div class="stat-value"><span id="score">0</span></div>
+            </div>
+            <div class="stat-box">
+                <div>Rimanenti</div>
+                <div class="stat-value" id="remaining">0</div>
+            </div>
+            <div class="stat-box">
+                <div>Precisione</div>
+                <div class="stat-value" id="accuracy">0%</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="persona">
+            <div id="imageContainer">
+                <!-- La imagen se cargará aquí -->
+            </div>
+            <h2 id="nombre">Caricamento...</h2>
+        </div>
+        
+        <div class="loading" id="loading">Caricamento della domanda...</div>
+        
+        <div class="buttons-container">
+            <button class="conference" id="conferenceBtn" onclick="elegir('conference')">
+                <span class="icon">⚽</span> Conference League
+            </button>
+            <button class="interpol" id="interpolBtn" onclick="elegir('interpol')">
+                <span class="icon">🚨</span> Interpol
+            </button>
+        </div>
+        
+        <div id="resultado"></div>
+        
+        <div class="end-game" id="endGame">
+            <h2>Complimenti</h2>
+            <p>Hai identificato tutti correttamente.</p>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div>Punteggio finale</div>
+                    <div class="final-value" id="finalScore">0</div>
+                </div>
+                <div class="final-stat">
+                    <div>Tentativi totali</div>
+                    <div class="final-value" id="totalAttempts">0</div>
+                </div>
+                <div class="final-stat">
+                    <div>Precisione</div>
+                    <div class="final-value" id="finalAccuracy">0%</div>
+                </div>
+            </div>
+            <button class="restart" onclick="reiniciarJuego()">Gioca ancora</button>
+        </div>
+    </div>
+
+    <script>
+        // DATOS DEL JUEGO
+        const personas = [
+            {
+                nombre: "Nino Marcelli",
+                foto: "https://img.a.transfermarkt.technology/portrait/big/726661-1713530168.png?lm=1",
+                tipo: "conference",
+                datos: "SK Slovan Bratislava"
+            },
+            {
+                nombre: "Yonathan Gonzalo Pelais Gutierrez",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-46017/images/63551100",
+                tipo: "interpol",
+                datos: "Complice in omicidio di primo grado"
+            },
+            {
+                nombre: "Milan Mbeng",
+                foto: "https://img.a.transfermarkt.technology/portrait/big/854959-1672601693.jpg?lm=1",
+                tipo: "conference",
+                datos: "Shelbourne FC"
+            },
+            {
+                nombre: "Aleksa Todorovic",
+                foto: "https://cdn.soccerwiki.org/images/player/137597.png",
+                tipo: "conference",
+                datos: "HNK Rijeka"
+            },
+            {
+                nombre: "Tomasz Grzegorz Gnysinski",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-22703/images/63415455",
+                tipo: "interpol",
+                datos: "Associazione a delinquere, riciclaggio"
+            },
+            {
+                nombre: "Aala Ahmed",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2024-84283/images/63293818",
+                tipo: "interpol",
+                datos: "Omicidio, istigazione all'omicidio, premeditazione di omicidio, traffico massivo di armi"
+            },
+            {
+                nombre: "Nemanja Bilbija",
+                foto: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.a.transfermarkt.technology%2Fportrait%2Fbig%2F109212-1587821499.jpg%3Flm%3D1&f=1&nofb=1&ipt=75ee45791cd04e8502aead2400f28168d44a25d5debb766341da97a79469e589",
+                tipo: "conference",
+                datos: "Zrinjski Mostar"
+            },
+            {
+                nombre: "Matja Boben",
+                foto: "https://cdn.soccerwiki.org/images/player/67766.png",
+                tipo: "conference",
+                datos: "NK Celje"
+
+            },
+            {
+                nombre: "Diego Andres Sanguinetti",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-28000/images/63490331",
+                tipo: "interpol",
+                datos: "Narcotraffico"
+            },
+            {
+                nombre: "Nardin Mulahusejnovic",
+                foto: "https://img.a.transfermarkt.technology/portrait/big/397771-1736616936.jpg?lm=1",
+                tipo: "conference",
+                datos: "FC Noah"
+            },
+            {
+                nombre: "Jan Marsalek",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-57518/images/63581676",
+                tipo: "interpol",
+                datos: "Falsa dichiarazione a pubblico ufficiale, manipolazione del mercato"
+            },
+            {
+                nombre: "Radoslav Kirlov",
+                foto: "https://img.a.transfermarkt.technology/portrait/big/140109-1662579620.png?lm=1",
+                tipo: "conference",
+                datos: "Levski Sofía"
+            },
+            {
+                nombre: "Wittenbeck Mateusz Lukasz", 
+                foto: "https://ws-public.interpol.int/notices/v1/red/2022-52758/images/62514567",
+                tipo: "interpol",
+                datos: "Narcotraffico, affiliazione a gruppi criminali e vendita di beni rubati"
+            },
+            {
+                nombre: "Stevanovic",
+                foto: "https://cdn.futwiz.com/assets/img/fc25/faces/206254.png?25",
+                tipo: "conference",
+                datos: "Servette Fc"
+            },
+            {
+                nombre: "Johan Marcos Sosa Fernandez",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-85206/images/63699176",
+                tipo: "interpol",
+                datos: "Omicidio"
+            },
+            {
+                nombre: "Ahmed Shehab",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2023-80699/images/62928658",
+                tipo: "interpol",
+                datos: "2 omicidi, 17 tentati omicidi"
+            },
+            {
+                nombre: "Robert Denis Gonzalez",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-82424/images/63683524",
+                tipo: "interpol",
+                datos: "Violenza sessuale su minore"
+            },
+            {
+                nombre: "Ayad Soufi",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-82408/images/63683396",
+                tipo: "interpol",
+                datos: "Narcotraffico, traffico di armi"
+            },
+            {
+                nombre: "Martinovic Mario",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2023-72726/images/62900200",
+                tipo: "interpol",
+                datos: "Frode, riciclo di denaro"
+            },
+            {
+                nombre: "Savo Susic",
+                foto: "https://img.a.transfermarkt.technology/portrait/header/798288-1722370255.jpg?lm=1",
+                tipo: "conference",
+                datos: "Borac Fc"
+            },
+            {
+                nombre: "Moxey D'Andre Devon",
+                foto: "https://ws-public.interpol.int/notices/v1/red/2025-73398/images/63647700",
+                tipo: "interpol",
+                datos: "Premeditazione di omicidio"
+            },
+            {
+                nombre: "Babacar Fati",
+                foto: "https://cdn.soccerwiki.org/images/player/124013.png",
+                tipo: "conference",
+                datos: "SJK"
+            },
+            {
+                nombre: "Baba Ndiaye",
+                foto: "https://web.guardiacivil.es/export/sites/guardiaCivil/imagenes/buscados/Buscados_internacional.html/01_Baba_NDIAYE.jpg",
+                tipo: "interpol",
+                datos: "Omicidio"
+            },
+            {
+                nombre: "Muhammet Tunahan Tasci",
+                foto: "https://cdn.soccerwiki.org/images/player/125077.png",
+                tipo: "conference",
+                datos: "SJK"
+            },
+            {
+                nombre: "Facundo Agustín Cáseres",
+                foto: "https://cdn.soccerwiki.org/images/player/113907.png",
+                tipo: "conference",
+                datos: "Gil Vicente FC"
+            },
+            {
+                nombre: "Cameron Mitchel Puertas Castro",
+                foto: "https://cdn.soccerwiki.org/images/player/105865.png",
+                tipo: "conference",
+                datos: "Al Qadsiah Fc"
+            },
+            {
+                nombre: "Maris Jankevics",
+                foto: "https://eumostwanted.eu/sites/default/files/styles/wanted_medium/public/wanted_pictures/M%C4%81ris%20Jankevics.jpg?itok=s0UwsBBd",
+                tipo: "interpol",
+                datos: "Omicidio di primo grado"
+            },
+            {
+                nombre: "Joao Pualo Da Souza Mares",
+                foto: "https://cdn.soccerwiki.org/images/player/123714.png",
+                tipo: "conference",
+                datos: "Dynamo Moskva"
+            },
+            {
+                nombre: "Abdullah Khodor",
+                foto: "https://img.a.transfermarkt.technology/portrait/big/s_96360_3586_2010_1.jpg?lm=1",
+                tipo: "interpol",
+                datos: "Rapimento, riciclaggio di denaro, rapina a mano armata, partecipazione ad associazioni criminali"
+            },
+            {
+                nombre: "Juan Camilo Mesa",
+                foto: "https://img.a.transfermarkt.technology/portrait/header/624919-1727547152.jpg?lm=1",
+                tipo: "conference",
+                datos: "FC Drita"
+            },
+        ];
+
+        // Variables del juego
+        let puntuacion = 0;
+        let personaActual = null;
+        let personasAcertadas = new Set(); // Track correctly guessed people
+        let preguntasRealizadas = 0;
+        let juegoTerminado = false;
+        let totalPersonas = personas.length;
+
+        // Referencias a elementos DOM
+        const conferenceBtn = document.getElementById('conferenceBtn');
+        const interpolBtn = document.getElementById('interpolBtn');
+        const resultado = document.getElementById('resultado');
+        const scoreDisplay = document.getElementById('score');
+        const remainingDisplay = document.getElementById('remaining');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const endGameDiv = document.getElementById('endGame');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const totalAttemptsDisplay = document.getElementById('totalAttempts');
+        const finalAccuracyDisplay = document.getElementById('finalAccuracy');
+        const progressBar = document.getElementById('progressBar');
+        const loadingDiv = document.getElementById('loading');
+        const imageContainer = document.getElementById('imageContainer');
+        const nombreDisplay = document.getElementById('nombre');
+
+        // Inicializar juego
+        function inicializarJuego() {
+            // Start with all personas available
+            personasAcertadas = new Set();
+            puntuacion = 0;
+            preguntasRealizadas = 0;
+            juegoTerminado = false;
+            scoreDisplay.textContent = puntuacion;
+            remainingDisplay.textContent = totalPersonas;
+            accuracyDisplay.textContent = "0%";
+            progressBar.style.width = '0%';
+            endGameDiv.style.display = 'none';
+            loadingDiv.style.display = 'none';
+            conferenceBtn.disabled = false;
+            interpolBtn.disabled = false;
+            resultado.textContent = "";
+            resultado.className = "";
+            
+            siguientePersona();
+        }
+
+        // Función para cargar imagen con manejo de errores
+        function cargarImagen(url, callback) {
+            const img = new Image();
+            img.onload = function() {
+                callback(img);
+            };
+            img.onerror = function() {
+                // Si la imagen no carga, crear un placeholder
+                const placeholder = document.createElement('div');
+                placeholder.className = 'image-placeholder';
+                placeholder.textContent = 'Immagine non disponibile';
+                imageContainer.innerHTML = '';
+                imageContainer.appendChild(placeholder);
+                callback(null);
+            };
+            img.src = url;
+        }
+
+        function siguientePersona() {
+            // Check if all personas have been correctly guessed
+            if (personasAcertadas.size === totalPersonas) {
+                terminarJuego();
+                return;
+            }
+
+            // Select a random person from those not yet correctly guessed
+            const personasDisponibles = personas.filter(p => !personasAcertadas.has(p.nombre));
+            const indiceAleatorio = Math.floor(Math.random() * personasDisponibles.length);
+            personaActual = personasDisponibles[indiceAleatorio];
+            
+            // Mostrar mensaje de carga
+            loadingDiv.style.display = 'block';
+            conferenceBtn.disabled = true;
+            interpolBtn.disabled = true;
+            nombreDisplay.textContent = "Caricamento...";
+            
+            // Cargar la imagen con manejo de errores
+            cargarImagen(personaActual.foto, function(img) {
+                imageContainer.innerHTML = '';
+                if (img) {
+                    imageContainer.appendChild(img);
+                }
+                nombreDisplay.textContent = personaActual.nombre;
+                loadingDiv.style.display = 'none';
+                conferenceBtn.disabled = false;
+                interpolBtn.disabled = false;
+            });
+            
+            // Actualizar barra de progreso
+            const progreso = (personasAcertadas.size / totalPersonas) * 100;
+            progressBar.style.width = progreso + '%';
+            
+            // Update remaining count
+            remainingDisplay.textContent = totalPersonas - personasAcertadas.size;
+            resultado.classList.add('hidden-result');
+        }
+
+        function elegir(eleccion) {
+            if (juegoTerminado) return;
+            
+            // Deshabilitar botones para evitar múltiples clics
+            conferenceBtn.disabled = true;
+            interpolBtn.disabled = true;
+            
+            // Verificar si la elección es correcta
+            const esCorrecto = personaActual.tipo === eleccion;
+            preguntasRealizadas++;
+            
+            resultado.classList.remove('hidden-result');
+            if (esCorrecto) {
+                puntuacion++;
+                personasAcertadas.add(personaActual.nombre); // Mark as correctly guessed
+                resultado.textContent = "Esatto!\n" + personaActual.datos;
+                resultado.className = "correct";
+            } else {
+                resultado.textContent = "Sbagliato!\n" + personaActual.datos;
+                resultado.className = "incorrect";
+                // Person stays in the pool to be guessed again
+            }
+            
+            // Actualizar precisión
+            const precision = Math.round((puntuacion / preguntasRealizadas) * 100);
+            accuracyDisplay.textContent = precision + "%";
+            
+            // Actualizar puntuación
+            scoreDisplay.textContent = puntuacion;
+            
+            // Pasar a la siguiente persona después de 5 segundos
+            setTimeout(() => {
+                conferenceBtn.disabled = false;
+                interpolBtn.disabled = false;
+                siguientePersona();
+            }, 5000);
+        }
+
+        function terminarJuego() {
+            juegoTerminado = true;
+            conferenceBtn.disabled = true;
+            interpolBtn.disabled = true;
+            
+            // Calcular precisión final
+            const precisionFinal = Math.round((puntuacion / preguntasRealizadas) * 100);
+            
+            // Mostrar estadísticas finales
+            finalScoreDisplay.textContent = puntuacion + "/" + totalPersonas;
+            totalAttemptsDisplay.textContent = preguntasRealizadas;
+            finalAccuracyDisplay.textContent = precisionFinal + "%";
+            endGameDiv.style.display = 'block';
+            
+            // Actualizar barra de progreso al 100%
+            progressBar.style.width = '100%';
+        }
+
+        function reiniciarJuego() {
+            inicializarJuego();
+        }
+
+        // Iniciar juego al cargar la página
+        window.onload = inicializarJuego;
+    </script>
+</body>
+</html>
